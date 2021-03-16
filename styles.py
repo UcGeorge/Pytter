@@ -79,7 +79,7 @@ class TextStyle(Style):
             vertical_align: VerticalAlign = VerticalAlign.center.value,
             direction: TextDirection = TextDirection.left_to_right.value,
             text_indent: float = 0,
-            line_height: float = 1.0,
+            line_height: float = 1.1,
             word_spacing: float = 5,
             shadow: str = 'none'
             # TODO Add text-overflow property.
@@ -96,18 +96,22 @@ class TextStyle(Style):
             'vertical-align': vertical_align,
             'direction': direction,
             'text-indent': str(text_indent) + 'px',
-            'line-height': str(line_height) + 'px',
+            'line-height': str(line_height),
             'word-spacing': str(word_spacing) + 'px',
             'text-shadow': shadow,
             'unicode-bidi': 'bidi-override'
         }
-
-    def __str__(self) -> str:
-        css_string = ''
+        self.css = ''
         for property, value in self.style.items():
-            css_string += f'{property}:{value};'
+            self.css += f'{property}:{value};'
 
-        return css_string
 
-    def __repr__(self) -> str:
-        return self.__str__()
+class Padding(Style):
+    def __init__(
+        self,
+        top: float = 0.0,
+        right: float = 0.0,
+        bottom: float = 0.0,
+        left: float = 0.0,
+    ):
+        self.css = f'padding-top: {top}px;padding-right: {right}px;padding-bottom: {bottom}px;padding-left: {left}px;'
