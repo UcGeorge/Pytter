@@ -1,3 +1,5 @@
+from styles import Color, TextStyle
+from typing import Dict
 from widget import Widget
 from build_context import BuildContext
 from html_meta import (HtmlVersion, Lang, Charset)
@@ -10,6 +12,7 @@ class Page(Widget):
         html_version: HtmlVersion = HtmlVersion.HTML5,
         lang: Lang = Lang.EN,
         charset: Charset = Charset.UTF_8,
+        title: str = 'Page',
         child: Widget = Widget()
     ):
 
@@ -18,14 +21,9 @@ class Page(Widget):
         self.lang = lang
         self.charset = charset
         self.child = child
+        self.title = title
         self.context = BuildContext()
         self.html = self.build(self.context)
-
-    def __repr__(self):
-        return self.html
-
-    def __str__(self):
-        return self.html
 
     def build(self, context: BuildContext) -> str:
 
@@ -36,7 +34,7 @@ class Page(Widget):
     <meta charset="{self.charset}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{self.title}</title>
 </head>
 <body>
     {self.child}
@@ -49,52 +47,63 @@ class MenuPage(Widget):
 
     def __init__(
         self,
-
+        html_version: HtmlVersion = HtmlVersion.HTML5.value,
+        lang: Lang = Lang.EN.value,
+        title: str = 'Document',
+        nav_links: 'Dict[str:str]' = {
+            'About': '#',
+            'Services': '#',
+            'Clients': '#',
+            'Contact': '#'
+        },
+        toogle: Widget = 'open',
+        child: Widget = Widget(),
+        background_color: Color = Color.colors('#111'),
+        charset: Charset = Charset.UTF_8.value,
     ):
 
         # super().__init__()
+        self.html_version = html_version
+        self.lang = lang
+        self.charset = charset
+        self.title = title
+        self.nav_links = ''.join(
+            [f'''<a href="{href}">{key}</a>\n''' for key, href in nav_links.items()])
+        self.toogle = toogle
+        self.child = child
+        self.background_color = background_color
         self.context = BuildContext()
         self.html = self.build(self.context)
 
-    def __repr__(self):
-        return self.html
-
-    def __str__(self):
-        return self.html
-
     def build(self, context: BuildContext) -> str:
 
-        return '''
+        return f'''
 <!DOCTYPE html>
-<html lang="Lang.EN">
-
+<html lang="{self.lang}">
 <head>
-    <meta charset="Charset.UTF_8">
+    <meta charset="{self.charset}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{self.title}</title>
 </head>
 
 <body>
     <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <a href="#">About</a>
-        <a href="#">Services</a>
-        <a href="#">Clients</a>
-        <a href="#">Contact</a>
+        {self.nav_links}
     </div>
 
     <!-- Use any element to open the sidenav -->
-    <span onclick="openNav()">open</span>
+    <span onclick="openNav()">{self.toogle}</span>
 
     <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
     <div id="main">
-        <h1>Hello World</h1>
+        {self.child}
     </div>
     <style>
         /* The side navigation menu */
         
-        .sidenav {
+        .sidenav {{
             height: 100%;
             /* 100% \Full-height */
             width: 0;
@@ -106,7 +115,7 @@ class MenuPage(Widget):
             top: 0;
             /* Stay at the top */
             left: 0;
-            background-color: #111;
+            background-color: {self.background_color};
             /* Black*/
             overflow-x: hidden;
             /* Disable horizontal scroll */
@@ -114,66 +123,79 @@ class MenuPage(Widget):
             /* Place content 60px from the top */
             transition: 0.5s;
             /* 0.5 second transition effect to slide in the sidenav */
-        }
+        }}
         /* The navigation menu links */
         
-        .sidenav a {
+        .sidenav a {{
             padding: 8px 8px 8px 32px;
             text-decoration: none;
             font-size: 25px;
             color: #818181;
             display: block;
             transition: 0.3s;
-        }
+        }}
         /* When you mouse over the navigation links, change their color */
         
-        .sidenav a:hover {
+        .sidenav a:hover {{
             color: #f1f1f1;
-        }
+        }}
         /* Position and style the close button (top right corner) */
         
-        .sidenav .closebtn {
+        .sidenav .closebtn {{
             position: absolute;
             top: 0;
             right: 25px;
             font-size: 36px;
             margin-left: 50px;
-        }
+        }}
         /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
         
-        #main {
+        #main {{
             transition: margin-left .5s;
             padding: 20px;
-        }
+        }}
         /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
         
-        @media screen and (max-height: 450px) {
-            .sidenav {
+        @media screen and (max-height: 450px) {{
+            .sidenav {{
                 padding-top: 15px;
-            }
-            .sidenav a {
+            }}
+            .sidenav a {{
                 font-size: 18px;
-            }
-        }
+            }}
+        }}
     </style>
     <script>
         /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
-        function openNav() {
+        function openNav() {{
             document.getElementById("mySidenav").style.width = "250px";
             document.getElementById("main").style.marginLeft = "250px";
             document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
-        }
+        }}
 
         /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
-        function closeNav() {
+        function closeNav() {{
             document.getElementById("mySidenav").style.width = "0";
             document.getElementById("main").style.marginLeft = "0";
             document.body.style.backgroundColor = "white";
-        }
+        }}
     </script>
 </body>
-
-</html>
-
 </html>
         '''
+
+
+class Text(Widget):
+
+    def __init__(
+        self,
+        text: str,
+        style: TextStyle = TextStyle(),
+    ):
+        self.text = text
+        self.style = style
+        self.context = BuildContext()
+        self.html = self.build(self.context)
+
+    def build(self, context: BuildContext) -> str:
+        return f'''<p style="{self.style}">{self.text}</p>'''
