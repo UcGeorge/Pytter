@@ -1,4 +1,4 @@
-from styles import Color, Padding, TextStyle
+from styles import BoxStyle, Color, EdgeInsets, EdgeInsetsProperty, Length, TextStyle
 from typing import Dict
 from widget import Widget
 from build_context import BuildContext
@@ -182,7 +182,7 @@ class MenuPage(Widget):
                 </script>
             </body>
             </html>
-                    '''
+        '''
 
 
 class Text(Widget):
@@ -205,16 +205,18 @@ class Column(Widget):
     def __init__(
         self,
         children: 'list[Widget]' = [Widget()],
-        style: TextStyle = TextStyle(),
+        width: Length = Length.percent(100)
     ):
-        self.children = ''.join([f'<tr>{widget}</tr>' for widget in children])
-        self.style = style
+        self.children = ''.join(
+            [f'<tr><td>{widget}</td></tr>' for widget in children])
+        self.width = width
+        self.style = f'width:{self.width};'
         self.context = BuildContext()
         self.html = self.build(self.context)
 
     def build(self, context: BuildContext) -> str:
         return f'''
-            <table style="height:100%">
+            <table style="{self.style}">
                 {self.children}
             </table>
         '''
@@ -224,16 +226,17 @@ class Row(Widget):
     def __init__(
         self,
         children: 'list[Widget]' = [Widget()],
-        style: TextStyle = TextStyle(),
+        width: Length = Length.percent(100)
     ):
         self.children = ''.join([f'<td>{widget}</td>' for widget in children])
-        self.style = style
+        self.width = width
+        self.style = f'width:{self.width};'
         self.context = BuildContext()
         self.html = self.build(self.context)
 
     def build(self, context: BuildContext) -> str:  # {self.style}
         return f'''
-            <table style="width:100%">
+            <table style="{self.style}">
             <tr>
                 {self.children}
             </tr>
@@ -245,7 +248,7 @@ class PaddedBox(Widget):
     def __init__(
         self,
         child: Widget = Widget(),
-        padding: Padding = Padding(),
+        padding: EdgeInsets = EdgeInsets(),
     ):
         self.child = child
         self.padding = padding
@@ -255,6 +258,34 @@ class PaddedBox(Widget):
     def build(self, context: BuildContext) -> str:
         return f'''
             <div style="{self.padding}">
+            {self.child}
+            </div>
+        '''
+
+
+class Box(Widget):
+    def __init__(
+        self,
+        child: Widget = None,
+        box_style: BoxStyle = BoxStyle(),
+        width: Length = Length.px(10.0),
+        height: Length = Length.px(10.0),
+        padding: EdgeInsets = EdgeInsets(),
+        margin: EdgeInsets = EdgeInsets(EdgeInsetsProperty.margin.value)
+    ):
+        self.child = child if child != None else ''
+        self.box_style = box_style
+        self.width = width
+        self.height = height
+        self.padding = padding
+        self.margin = margin
+        self.style = f'{self.box_style}width:{self.width};height:{self.height};{self.padding}{self.margin}'
+        self.context = BuildContext()
+        self.html = self.build(self.context)
+
+    def build(self, context: BuildContext) -> str:
+        return f'''
+            <div style="{self.style}">
             {self.child}
             </div>
         '''
