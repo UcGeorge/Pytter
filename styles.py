@@ -106,12 +106,33 @@ class TextStyle(Style):
             self.css += f'{property}:{value};'
 
 
-class Padding(Style):
+class EdgeInsetsProperty(enum.Enum):
+    padding = 'padding'
+    margin = 'margin'
+
+
+class Length(enum.Enum):
+    MAX = '100%'
+    def percent(x: float): return f'{x}%'
+    def px(x: float): return f'{x}px'
+
+
+class EdgeInsets(Style):
     def __init__(
         self,
-        top: float = 0.0,
-        right: float = 0.0,
-        bottom: float = 0.0,
-        left: float = 0.0,
+        property: EdgeInsetsProperty = EdgeInsetsProperty.padding.value,
+        top: Length = Length.px(0),
+        right: Length = Length.px(0),
+        bottom: Length = Length.px(0),
+        left: Length = Length.px(0),
     ):
-        self.css = f'padding-top: {top}px;padding-right: {right}px;padding-bottom: {bottom}px;padding-left: {left}px;'
+        self.css = f'{property}-top:{top};{property}-right:{right};{property}-bottom:{bottom};{property}-left:{left};'
+
+
+class BoxStyle(Style):
+    def __init__(
+        self,
+        color: Color = Color.white.value,
+        background_color: Color = Color.black.value
+    ):
+        self.css = f'color:{color};background-color:{background_color};'
