@@ -3,4 +3,4 @@
 > Checkout to any other branch to view unreleased updates and source code
 ---
 
-<img src="Pytter logo.png" alt="Home page">
+<img src="Pytter Logo.png" alt="Pytter">
